@@ -1,2 +1,2 @@
 all:
-	g++ -Wall -O -g P0.c tree.c traversals.c
+	g++ -o P0 P0.c tree.c traversals.c

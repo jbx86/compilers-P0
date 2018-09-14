@@ -1,3 +1,3 @@
-void preorder(node_t*);
-void inorder(node_t*);
-void postorder(node_t*);
+void preorder(node_t*, const char []);
+void inorder(node_t*, const char []);
+void postorder(node_t*, const char []);

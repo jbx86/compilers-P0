@@ -3,7 +3,7 @@
 
 static int level = -1;
 
-void preorder(node_t* node) {
+void preorder(node_t* node, const char fout[]) {
 	int i;
 	level++;
 
@@ -14,23 +14,23 @@ void preorder(node_t* node) {
 
 	//Left
 	if (node->left != NULL)
-		preorder(node->left);
+		preorder(node->left, fout);
 
 	//Right
 	if (node->right != NULL)
-		preorder(node->right);
+		preorder(node->right, fout);
 
 	level--;
 	return;
 }
 
-void inorder(node_t* node) {
+void inorder(node_t* node, const char fout[]) {
 	int i;
 	level++;
 
 	//Left
 	if (node->left != NULL)
-		inorder(node->left);
+		inorder(node->left, fout);
 
 	//Root
 	for (i = 0; i < level; i++)
@@ -39,23 +39,23 @@ void inorder(node_t* node) {
 
 	//Right
 	if (node->right != NULL)
-		inorder(node->right);
+		inorder(node->right, fout);
 
 	level--;
 	return;
 }
 
-void postorder(node_t* node) {
+void postorder(node_t* node, const char fout[]) {
 	int i;
 	level++;
 
 	//Left
 	if (node->left != NULL)
-		postorder(node->left);
+		postorder(node->left, fout);
 
 	//Right
 	if (node->right != NULL)
-		postorder(node->right);
+		postorder(node->right, fout);
 
 	//Root
 	for (i = 0; i < level; i++)
