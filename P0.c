@@ -1,57 +1,43 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include "sys.h"
 #include "node.h"
 #include "tree.h"
-
-#define BUFFSIZE 1024
-
-//void insertNode();
+#include "traversals.h"
 
 int main(int argc, char *argv[]) {
-	char buff[BUFFSIZE];
-	char out[] = "out";
+	char fout[] = "out"; // output file name defaults to out.extension
 	FILE *fp = NULL;
 	node_t *root = NULL;
 
 	// Determine what to do depending on arguments
 	if (argc == 1) {
-		fp = stdin;
+		fp = stdin; //stdin if no arguments are given
 	}
 	else if (argc == 2) {
-		strcpy(out, argv[1]);
+		// If an argument is given, open argv[1].fs18
+		strcpy(fout, argv[1]); // change output file name to reflect argument
 		char temp[strlen(argv[1])];
 		strcpy(temp, argv[1]);
 		strcat(temp, ".fs18");
 		if ((fp = fopen(temp, "r")) == NULL) {
+			//Error and exit if file cannot be opened
 			printf("Could not open %s\n", temp);
 			exit(0);
 		}
-		printf("Opened %s successfully\n", temp);
 	}
 	else {
+		// Error and exit if more than one argument is used
 		printf("Error: Too many argumnets\n");
 		exit(0);
 	}
 
-	// Read from file pointer
-	while (fgets(buff, BUFFSIZE, fp) != NULL) {
-		char *tok = strtok(buff, " \t\n");
-		while (tok != NULL) {
-			printf("[%s]", tok);
-			if (root == NULL)
-				root = newNode(strlen(tok));
-			else
-				insertNode(root, strlen(tok));
-			tok = strtok(NULL, " \t\n");
-		}
-		printf("\n");
-	}
-
-	preorder(root, 0);
-
-	printf("\n%s.output\n", out);
+	root = buildTree(fp); //Build tree from selected input
+	printf("root: %p\n", (void*)root);
+	//printf("Preorder:\n");
+	preorder(root, fout);
+	//printf("Inorder:\n");
+	inorder(root, fout);
+	//printf("Postorder:\n");
+	postorder(root, fout);
 
 	return 0;
 }

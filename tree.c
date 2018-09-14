@@ -1,71 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "sys.h"
 #include "node.h"
+#define BUFFSIZE 1024
 
-// Create a new node with this key value
-node_t* newNode(int key) {
-	node_t* node = (node_t*)malloc(sizeof(node_t));
-	node->key = key;
+node_t* newNode(char*);
+void insertNode(node_t*, char*);
+
+node_t *buildTree(FILE *fp) {
+	node_t *root = NULL;
+	char buff[BUFFSIZE];
+
+	// Copy from input source to buffer until EOF
+	while (fgets(buff, BUFFSIZE, fp) != NULL) {
+		// Parse tokens from buffer until end of buffer/line
+		char *tok = strtok(buff, " \t\n");
+		while (tok != NULL) {
+			if (root == NULL)
+				root = newNode(tok);
+			else
+				insertNode(root, tok);
+			tok = strtok(NULL, " \t\n");
+		}
+	}
+	return root;
+}
+
+node_t* newNode(char* tok) {
+	node *node = (node_t*)malloc(sizeof(node_t));
+	node->key = strlen(tok);
 	node->left = NULL;
 	node->right = NULL;
-	printf("New node %d\n", key);
+	//printf("Node created from \"%s\"\n%p:\t%d\t%p\t%p\n", tok, (void*)node, node->key, (void*)node->left, (void*)node->right); 
 	return node;
 }
 
-// Insert data into the tree
-void insertNode(node_t* node, int key) {
-	if (key == node->key) {
-		// If the right node has been found, insert the data
-		printf("%d is alread in the tree\n", key);
+void insertNode(node_t *node, char *tok) {
+	if (strlen(tok) == node->key) {
+		//printf("Node already exists\n");
 	}
-	else if (key <= node->key) {
-		// If the key value is smaller, continue to the left child
-		printf("%d < %d, left\n", key, node->key);
+	else if (strlen(tok) < node->key) {
 		if (node->left == NULL)
-			node->left = newNode(key);
+			node->left = newNode(tok);
 		else
-			insertNode(node->left, key);
+			insertNode(node->left, tok);
 	}
 	else {
-		// If the key value is larger, continue to the right child
-		printf("%d > %d, right\n", key, node->key);
 		if (node->right == NULL)
-			node->right = newNode(key);
+			node->right = newNode(tok);
 		else
-			insertNode(node->right, key);
+			insertNode(node->right, tok);
 	}
-}
-
-void preorder(node_t* node, int lvl) {
-	int i;
-	for (i = 0; i < lvl; i++)
-		printf("  ");
-	printf("%d\n", node->key);
-	if (node->left != NULL)
-		preorder(node->left, lvl + 1);
-	if (node->right != NULL)
-		preorder(node->right, lvl + 1);
-}
-
-void inorder(node_t* node, int lvl) {
-	if (node->left != NULL)
-		inorder(node->left, lvl + 1);
-	int i;
-	for (i = 0; i < lvl; i++)
-		printf("  ");
-	printf("%d\n", node->key);
-	if (node->right != NULL)
-		inorder(node->right, lvl + 1);
-}
-
-void postorder(node_t* node, int lvl) {
-	if (node->left != NULL)
-		postorder(node->left, lvl + 1);
-	if (node->right != NULL)
-		postorder(node->right, lvl + 1);
-
-	int i;
-	for (i = 0; i < lvl; i++)
-		printf("  ");
-	printf("%d\n", node->key);
+	return;
 }
