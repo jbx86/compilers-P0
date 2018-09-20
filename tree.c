@@ -1,7 +1,7 @@
 #include "sys.h"
 #include "node.h"
 #include "tree.h"
-#define BUFFSIZE 10
+#define BUFFSIZE 256
 
 static int level = 0;
 
@@ -59,10 +59,9 @@ void insertNode(node_t *node, char *tok) {
 	return;
 }
 
-void preorder(node_t* node, const char fout[]) {
-
+void preorder(node_t* node, FILE *fp) {
+	
 	//Root
-	FILE *fp = fopen(fout, "a");
 	for (int i = 0; i < level; i++)
 		fprintf(fp, "  ");
 	fprintf(fp, "%d", node->key);
@@ -74,70 +73,84 @@ void preorder(node_t* node, const char fout[]) {
 	//Left
 	if (node->left != NULL){
 		level++;
-		preorder(node->left, fout);
+		preorder(node->left, fp);
 		level--;
 	}
 
 	//Right
 	if (node->right != NULL) {
 		level++;
-		preorder(node->right, fout);
+		preorder(node->right, fp);
 		level--;
 	}
 
 	return;
 }
 
-void inorder(node_t* node, const char fout[]) {
+void inorder(node_t* node, FILE *fp) {
 
 	//Left
 	if (node->left != NULL) {
 		level++;
-		inorder(node->left, fout);
+		inorder(node->left, fp);
 		level--;
 	}
 
 	//Root
 	for (int i = 0; i < level; i++)
+		fprintf(fp, "  ");
+	fprintf(fp, "%d", node->key);
+	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
+		fprintf(fp, " %s", it->c_str());
+	fprintf(fp, "\n");
+
+/*	for (int i = 0; i < level; i++)
 		printf("  ");
 	printf("%d", node->key);
 	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
 		printf(" %s", it->c_str());
 	printf("\n");
-
+*/
 	//Right
 	if (node->right != NULL) {
 		level++;
-		inorder(node->right, fout);
+		inorder(node->right, fp);
 		level--;
 	}
 
 	return;
 }
 
-void postorder(node_t* node, const char fout[]) {
+void postorder(node_t* node, FILE *fp) {
 
 	//Left
 	if (node->left != NULL) {
 		level++;
-		postorder(node->left, fout);
+		postorder(node->left, fp);
 		level--;
 	}
 
 	//Right
 	if (node->right != NULL) {
 		level++;
-		postorder(node->right, fout);
+		postorder(node->right, fp);
 		level--;
 	}
 
 	//Root
 	for (int i = 0; i < level; i++)
+		fprintf(fp, "  ");
+	fprintf(fp, "%d", node->key);
+	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
+		fprintf(fp, " %s", it->c_str());
+	fprintf(fp, "\n");
+
+/*	for (int i = 0; i < level; i++)
 		printf("  ");
 	printf("%d", node->key);
 	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
 		printf(" %s", it->c_str());
 	printf("\n");
-
+*/
 	return;
 }
