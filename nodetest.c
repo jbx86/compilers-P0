@@ -1,27 +1,28 @@
-
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "sys.h"
+#include <vector>
+#include <iostream>
 #include <set>
 
-#include "node.h"
-#include "tree.h"
+//using namespace std;
 
-#define BUFFSIZE 1024
+typedef struct node {
+	std::set<int> myset;
+} node_t;
 
-//void insertNode();
+/*test mytest;
 
-int main(int argc, char *argv[]) {
-	node_t *node = newNode(10);
-	printf("%d\n", node->key);
-	node->key = 5;
-	node::tokens.insert("Hello");
+void foo() {
+	mytest.myset.insert(3);
+}
+*/
 
-	set<string> tok;
-	tok.insert("Hello");
-	tok.insert("It's");
-	tok.insert("Me");
-
+int main() {
+	node_t mytest;
+	mytest.myset.insert(3);
+	//foo();
+	std::cout << "myset contains:";
+	for (std::set<int>::iterator it = mytest.myset.begin(); it != mytest.myset.end(); ++it)
+		std::cout << ' ' << *it;
+	std::cout << std::endl;
 	return 0;
 }

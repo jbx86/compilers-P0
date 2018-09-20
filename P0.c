@@ -4,9 +4,10 @@
 #include "traversals.h"
 
 int main(int argc, char *argv[]) {
-	char fout[] = "out"; // output file name defaults to out.extension
+	char fname[] = "out"; // output file name defaults to out.extension
 	FILE *fp = NULL;
 	node_t *root = NULL;
+	long int flen;
 
 	// Determine what to do depending on arguments
 	if (argc == 1) {
@@ -14,13 +15,13 @@ int main(int argc, char *argv[]) {
 	}
 	else if (argc == 2) {
 		// If an argument is given, open argv[1].fs18
-		strcpy(fout, argv[1]); // change output file name to reflect argument
-		char temp[strlen(argv[1])];
-		strcpy(temp, argv[1]);
-		strcat(temp, ".fs18");
-		if ((fp = fopen(temp, "r")) == NULL) {
+		strcpy(fname, argv[1]);
+		char fin[strlen(argv[1])];
+		strcpy(fin, argv[1]);
+		strcat(fin, ".fs18");
+		if ((fp = fopen(fin, "r")) == NULL) {
 			//Error and exit if file cannot be opened
-			printf("Could not open %s\n", temp);
+			printf("Could not open %s\n", fin);
 			exit(0);
 		}
 	}
@@ -30,14 +31,22 @@ int main(int argc, char *argv[]) {
 		exit(0);
 	}
 
-	root = buildTree(fp); //Build tree from selected input
+	root = buildTree(fp);
+
+	fseek(fp, 0L, SEEK_END);
+	flen = ftell(fp);
+	fseek(fp, 0L, SEEK_SET);
+	printf("%ld\n", flen);
+
+	//root = buildTree(fp); //Build tree from selected input
+	
 	printf("root: %p\n", (void*)root);
-	//printf("Preorder:\n");
-	preorder(root, fout);
-	//printf("Inorder:\n");
-	inorder(root, fout);
-	//printf("Postorder:\n");
-	postorder(root, fout);
+	printf("Preorder:\n");
+	preorder(root, fname);
+	printf("Inorder:\n");
+	inorder(root, fname);
+	printf("Postorder:\n");
+	postorder(root, fname);
 
 	return 0;
 }

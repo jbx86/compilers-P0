@@ -1,5 +1,6 @@
 #include "sys.h"
 #include "node.h"
+#include <iostream>
 
 static int level = -1;
 
@@ -35,7 +36,13 @@ void inorder(node_t* node, const char fout[]) {
 	//Root
 	for (i = 0; i < level; i++)
 		printf("  ");
-	printf("%d\n", node->key);
+	printf("%d ", node->key);
+	//set<string>::iterator it = node->tokSet->begin();
+	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++) {
+		//printf(" %s", it);
+		cout << ' ' << *it;
+	}
+	cout << endl;
 
 	//Right
 	if (node->right != NULL)

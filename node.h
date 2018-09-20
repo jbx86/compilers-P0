@@ -1,7 +1,7 @@
 // Binary tree node
 typedef struct node {
 	unsigned int key;
-	//token set
+	set<string> *tokSet;
 	struct node *left;
 	struct node *right;
 } node_t;
