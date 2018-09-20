@@ -1,36 +1,43 @@
-#include "sys.h"
-#include "node.h"
-#include "tree.h"
-#define BUFFSIZE 256
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <set>
+#include <string>
 
+#include "node.h"
+
+//Helper function prototypes
+node_t* newNode(const char*);
+void insertNode(node_t*, char*);
+
+//Helper variable
 static int level = 0;
 
-// Given a file pointer, will create a tree and return pointer to the root node
-node_t* buildTree(FILE *fp) {
+/* Given a file pointer, will create a tree and return pointer to the root node */
+node_t* buildTree(FILE *fp)
+{
 	node_t *root = NULL;
-	char buff[BUFFSIZE];
+	const int SIZE = 256;
+	char buff[SIZE];
 
 	// Copy from input source to buffer until EOF
-	while (fgets(buff, BUFFSIZE, fp) != NULL) {
-
-		// Parse tokens from buffer until end of buffer/line
-		char *tok = strtok(buff, " \t\n");
-		while (tok != NULL) {
-			if (root == NULL)
-				root = newNode(tok);	//If no root exists, create root from token
-			else
-				insertNode(root, tok);	//Else, find token's place in the tree
-			tok = strtok(NULL, " \t\n");
-		}
+	while (fscanf(fp, "%s", buff) != EOF)
+	{
+		if (root == NULL)
+			root = newNode(buff);
+		else
+			insertNode(root, buff);
 
 	}
+
 	return root;
 }
 
-// Create a new node in tree and start a set with the token
-node_t* newNode(const char* tok) {
+/* Allocate and initialize a node and return a pointer to it */
+node_t* newNode(const char* tok)
+{
 	node *node = (node_t*)malloc(sizeof(node_t));
-	node->tokSet = new set<string>;
+	node->tokSet = new std::set<std::string>;
 	node->tokSet->insert(tok);
 	node->key = strlen(tok);
 	node->left = NULL;
@@ -39,12 +46,14 @@ node_t* newNode(const char* tok) {
 }
 
 // Traverse tree until proper node is found/created
-void insertNode(node_t *node, char *tok) {
-
-	if (strlen(tok) == node->key) {
+void insertNode(node_t *node, char *tok)
+{
+	if (strlen(tok) == node->key)
+	{
 		node->tokSet->insert(tok);
 	}
-	else if (strlen(tok) < node->key) {
+	else if (strlen(tok) < node->key)
+	{
 		if (node->left == NULL)
 			node->left = newNode(tok);
 		else
@@ -59,26 +68,27 @@ void insertNode(node_t *node, char *tok) {
 	return;
 }
 
-void preorder(node_t* node, FILE *fp) {
-	
-	//Root
+void preorder(node_t* node, FILE *fp)
+{	
+	//Print root
 	for (int i = 0; i < level; i++)
 		fprintf(fp, "  ");
 	fprintf(fp, "%d", node->key);
-	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
+	for (std::set<std::string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
 		fprintf(fp, " %s", it->c_str());
 	fprintf(fp, "\n");
 
-
-	//Left
-	if (node->left != NULL){
+	//Traverse left child
+	if (node->left != NULL)
+	{
 		level++;
 		preorder(node->left, fp);
 		level--;
 	}
 
-	//Right
-	if (node->right != NULL) {
+	//Traverse right child
+	if (node->right != NULL)
+	{
 		level++;
 		preorder(node->right, fp);
 		level--;
@@ -87,32 +97,27 @@ void preorder(node_t* node, FILE *fp) {
 	return;
 }
 
-void inorder(node_t* node, FILE *fp) {
-
-	//Left
-	if (node->left != NULL) {
+void inorder(node_t* node, FILE *fp)
+{
+	//Traverse left child
+	if (node->left != NULL)
+	{
 		level++;
 		inorder(node->left, fp);
 		level--;
 	}
 
-	//Root
+	//Print root
 	for (int i = 0; i < level; i++)
 		fprintf(fp, "  ");
 	fprintf(fp, "%d", node->key);
-	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
+	for (std::set<std::string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
 		fprintf(fp, " %s", it->c_str());
 	fprintf(fp, "\n");
 
-/*	for (int i = 0; i < level; i++)
-		printf("  ");
-	printf("%d", node->key);
-	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
-		printf(" %s", it->c_str());
-	printf("\n");
-*/
-	//Right
-	if (node->right != NULL) {
+	//Traverse right child
+	if (node->right != NULL)
+	{
 		level++;
 		inorder(node->right, fp);
 		level--;
@@ -121,36 +126,31 @@ void inorder(node_t* node, FILE *fp) {
 	return;
 }
 
-void postorder(node_t* node, FILE *fp) {
-
-	//Left
-	if (node->left != NULL) {
+void postorder(node_t* node, FILE *fp)
+{
+	//Traverse left child
+	if (node->left != NULL)
+	{
 		level++;
 		postorder(node->left, fp);
 		level--;
 	}
 
-	//Right
-	if (node->right != NULL) {
+	//Traverse right child
+	if (node->right != NULL)
+	{
 		level++;
 		postorder(node->right, fp);
 		level--;
 	}
 
-	//Root
+	//Print root
 	for (int i = 0; i < level; i++)
 		fprintf(fp, "  ");
 	fprintf(fp, "%d", node->key);
-	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
+	for (std::set<std::string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
 		fprintf(fp, " %s", it->c_str());
 	fprintf(fp, "\n");
 
-/*	for (int i = 0; i < level; i++)
-		printf("  ");
-	printf("%d", node->key);
-	for (set<string>::iterator it = node->tokSet->begin(); it != node->tokSet->end(); it++)
-		printf(" %s", it->c_str());
-	printf("\n");
-*/
 	return;
 }
