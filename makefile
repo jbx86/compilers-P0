@@ -1,2 +1,2 @@
 all:
-	g++ -o P0 P0.c tree.c
+	g++ -o P0 main.c tree.c

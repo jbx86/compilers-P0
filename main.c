@@ -25,12 +25,15 @@ int main(int argc, char *argv[])
 	}
 	else if (argc == 2)
 	{
-		
 		// Use argument for i/o file names
-		char inputName[strlen(argv[1]) + sizeof(".fs18") - 1];
-		char preorderName[strlen(argv[1]) + sizeof(".preorder") - 1];
-		char inorderName[strlen(argv[1]) + sizeof(".inorder") - 1];
-		char postorderName[strlen(argv[1]) + sizeof(".postorder") - 1];
+		char inputName[strlen(argv[1]) + sizeof(".fs18")];
+		char preorderName[strlen(argv[1]) + sizeof(".preorder")];
+		char inorderName[strlen(argv[1]) + sizeof(".inorder")];
+		char postorderName[strlen(argv[1]) + sizeof(".postorder")];
+
+		//char* inputName = (char*)malloc(sizeof(char)*(strlen(argv[1]) + sizeof(".fs18");
+
+
 
 		// Generate output file names
 		sprintf(inputName, "%s.fs18", argv[1]);
@@ -38,17 +41,20 @@ int main(int argc, char *argv[])
 		sprintf(inorderName, "%s.inorder", argv[1]);
 		sprintf(postorderName, "%s.postorder", argv[1]);
 
+		printf("Input: \'%s\'\nFile: \'%s\'\nPre: \'%s\'\nInO: \'%s\'\nPost: \'%s\'\n", argv[1], inputName, preorderName, inorderName, postorderName);
+	
+		if ((fpInput = fopen(inputName, "r")) == NULL)
+		{
+			//Error and exit if file cannot be opened
+			printf("Could not open \"%s\"\n", inputName);
+			exit(0);
+		}
+
 		// Open output files for writing
 		fpPreorder = fopen(preorderName, "w");
 		fpInorder = fopen(inorderName, "w");
 		fpPostorder = fopen(postorderName, "w");
-		
-		if ((fpInput = fopen(inputName, "r")) == NULL)
-		{
-			//Error and exit if file cannot be opened
-			printf("Could not open %s\n", inputName);
-			exit(0);
-		}
+
 	}
 	else
 	{
